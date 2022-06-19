@@ -8,6 +8,9 @@ public class GameMethods {
             return 1;
         }
         if (calculateWin(2, board)){
+            //System.out.println("jdfhjslfsdlf;lfks;dlfkjslkdfjslkdfjsdkf");
+//            App.print(board);
+//            System.out.println();
             return 2;
         }
         if (isFull(board)){
@@ -29,7 +32,7 @@ public class GameMethods {
         return backSlashSearch(num, board)|| forwardSlashSearch(num, board) || horizontalSearch(num, board) || verticalSearch(num, board);
 
     }
-    private static boolean backSlashSearch(int num, int[][] board){
+    public static boolean backSlashSearch(int num, int[][] board){
        ArrayList<Integer> topList = new ArrayList<>();
         ArrayList<Integer> bottomList = new ArrayList<>();
         for (int i=board.length-4;i>=0;i--){
@@ -50,7 +53,7 @@ public class GameMethods {
         }
         return false;
     }
-    private static boolean forwardSlashSearch(int num, int[][] board){
+    public static boolean forwardSlashSearch(int num, int[][] board){
         ArrayList<Integer> topList = new ArrayList<>();
         ArrayList<Integer> bottomList = new ArrayList<>();
         for (int r=board.length-1;r>2;r--){
@@ -91,7 +94,7 @@ public class GameMethods {
     }
     private static boolean winningLine(ArrayList<Integer> list, int num){
         int count = 0;
-        for (int i=0;i<list.size();i++){
+        for (int i=0;i<list.size()-3;i++){
             for (int j=i;j<list.size();j++){
                 if (list.get(j)==num){
                     count++;
