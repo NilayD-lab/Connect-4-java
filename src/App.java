@@ -43,13 +43,12 @@ public class App {
 //            count++;
 //            print(board);
 //        }
-
-       game();
+        game();
 
 
     }
     public static void game(){
-        if (count%4==0){
+        if (count%3==0){
             depth++;
         }
         if (GameMethods.decideGameState(board)!=-1){
@@ -124,16 +123,18 @@ public class App {
     public static void playBestMove(){
         int bestScore = Integer.MAX_VALUE;
         int bestMove = -10;
-        double[][] arr = new double[7][2];
+        ArrayList<ArrayList<Double>> arr = new ArrayList<>();
         ArrayList<Double> temp;
         for (int i=0;i<scores.length;i++){
-            arr[i][0]= i;
+            temp = new ArrayList<>();
+            temp.add((double)i);
             if (columnLengths[i]>=0){
-                arr[i][1] = scores[i];
+                temp.add(scores[i]);
             }
             else {
-                arr[i][1] = (double)Integer.MAX_VALUE;
+                temp.add((double)Integer.MAX_VALUE);
             }
+            arr.add(temp);
         }
 //        for (int i=0;i<scores.length;i++){
 //            if (columnLengths[i]>=0 && bestScore>scores[i]){
@@ -148,7 +149,7 @@ public class App {
         System.out.println(arr);
         //System.out.println("selection");
         //System.out.println(Heuristics.selectionSort(arr));
-        bestMove = (int)Heuristics.orderByCenter(reverse(Heuristics.selectionSort(arr)))[0][0];
+        bestMove = Heuristics.orderByCenter(reverse(Heuristics.selectionSort(arr))).get(0).get(0).intValue();
         System.out.println("best move: "+bestMove );
         System.out.println("cols");
         print(columnLengths);
@@ -160,14 +161,6 @@ public class App {
         System.out.println();
     }
     public static void print(int[][] arr){
-        for (int i=0;i<arr.length;i++){
-            for (int j=0;j<arr[i].length;j++){
-                System.out.print(arr[i][j] + " ");
-            }
-            System.out.println();
-        }
-    }
-    public static void print(double[][] arr){
         for (int i=0;i<arr.length;i++){
             for (int j=0;j<arr[i].length;j++){
                 System.out.print(arr[i][j] + " ");
@@ -187,15 +180,12 @@ public class App {
         }
         System.out.println();
     }
-
-    public static double[][] reverse(double[][] arr)
+    public static ArrayList<ArrayList<Double>> reverse(ArrayList<ArrayList<Double>> arr)
     {
-        double[][] newArr = new double[arr.length][arr[0].length];
-        int count = 0;
-        for (int i = arr.length - 1; i >= 0; i--) {
+        ArrayList<ArrayList<Double>> newArr = new ArrayList<>();
+        for (int i = arr.size() - 1; i >= 0; i--) {
 
-            newArr[count] = Heuristics.copy(arr[i]);
-            count++;
+            newArr.add(arr.get(i));
         }
         return newArr;
     }

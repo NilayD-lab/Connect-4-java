@@ -120,9 +120,9 @@ public class Worker extends Thread{
         }
         if (player1){
             maxVal = Integer.MIN_VALUE;
-            double[][] moves = Heuristics.orderMoves(1, columnLengths,board, depth);
-            for (int i=0;i<moves.length;i++){
-                int currentMove = (int)Math.floor(moves[i][0]);
+            ArrayList<ArrayList<Double>> moves = Heuristics.orderMoves(1, columnLengths,board, depth);
+            for (int i=0;i<moves.size();i++){
+                int currentMove = (int)Math.floor(moves.get(i).get(0));
                 if (columnLengths[currentMove]>=0){
                     board[columnLengths[currentMove]][currentMove] = 1;
                     columnLengths[currentMove]--;
@@ -147,9 +147,9 @@ public class Worker extends Thread{
         }
         else{
             minVal = Integer.MAX_VALUE;
-            double[][] moves = Heuristics.orderMoves(2, columnLengths,board, depth);
-            for (int i=0;i<moves.length;i++){
-                int currentMove = (int)Math.floor(moves[i][0]);
+            ArrayList<ArrayList<Double>> moves = Heuristics.orderMoves(2, columnLengths,board, depth);
+            for (int i=0;i<moves.size();i++){
+                int currentMove = (int)Math.floor(moves.get(i).get(0));
                 if (columnLengths[currentMove]>=0){
                     board[columnLengths[currentMove]][currentMove] = 2;
                     columnLengths[currentMove]--;

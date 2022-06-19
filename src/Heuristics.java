@@ -4,71 +4,73 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Heuristics {
-    public static double[][] orderMoves(int player, int[] columnLengths, int[][] board, int depth){
-        double[][] orderedMoves = new double[7][2];
-        //ArrayList<Double> temp;
+    public static ArrayList<ArrayList<Double>> orderMoves(int player, int[] columnLengths, int[][] board, int depth){
+        ArrayList<ArrayList<Double>> orderedMoves = new ArrayList<>();
+        ArrayList<Double> temp;
         for (int i=0;i<columnLengths.length;i++){
-            //temp = new ArrayList<>();
+            temp = new ArrayList<>();
             if (columnLengths[i] >= 0){
                 board[columnLengths[i]][i] = player;
                 columnLengths[i]--;
-                orderedMoves[i][0] = i;
-                orderedMoves[i][1] = heuristicValue(player, board, depth);
+                temp.add((double)i);
+                temp.add(heuristicValue(player, board, depth));
+                orderedMoves.add(temp);
                 columnLengths[i]++;
                 board[columnLengths[i]][i] = 0;
             }
             else {
-                orderedMoves[i][0] = i;
-                orderedMoves[i][1] = -200.0;
+                temp.add((double)i);
+                temp.add(-200.0);
+                orderedMoves.add(temp);
             }
         }
         return orderByCenter(selectionSort(orderedMoves));
     }
-    public static double[][] orderByCenter(double[][] arr){
+    public static ArrayList<ArrayList<Double>> orderByCenter(ArrayList<ArrayList<Double>> arr){
 
-        double[] max = new double[2];
-        max[0] = -1;
-        max[1] = 0;
+        ArrayList<Double> max = new ArrayList<>();
+        max.add(-1.0);
+        max.add(0.0);
         int maxIndex ;
-        for (int i=0;i<arr.length;i++){
+        for (int i=0;i<arr.size();i++){
             maxIndex = -1;
-            for (int j=i;j< arr.length;j++){
-                if (arr[i][1] == arr[j][1] && colValue(arr[j][0]) > colValue(max[0])){
-                    max = copy(arr[j]);
+            for (int j=i;j< arr.size();j++){
+                if (arr.get(i).get(1).equals(arr.get(j).get(1)) && colValue(arr.get(j).get(0)) > colValue(max.get(0))){
+                    max = new ArrayList<>(arr.get(j));
                     maxIndex = j;
                 }
             }
 
             if (maxIndex>-1){
-                arr[maxIndex] = copy(arr[i]);
-                arr[i] = copy(max);
-                max = new double[2];
-                max[0] = -1;
-                max[1] = 0;
+                arr.set(maxIndex, new ArrayList<>(arr.get(i)));
+                arr.set(i, new ArrayList<>(max));
+                max = new ArrayList<>();
+                max.add(-1.0);
+                max.add(0.0);
             }
 
         }
         return arr;
     }
-    public static double[][] selectionSort(double[][] arr){
-        double[] max = new double[2];
-        max[0] = -1;
-        max[1] = -200;
+    public static ArrayList<ArrayList<Double>> selectionSort(ArrayList<ArrayList<Double>> arr){
+        ArrayList<Double> max = new ArrayList<>();
+        max.add(-1.0);
+        max.add(-200.0);
         int maxIndex ;
-        for (int i=0;i<arr.length;i++){
+        for (int i=0;i<arr.size();i++){
             maxIndex = -1;
-            for (int j=i;j< arr.length;j++){
-                if (arr[j][1] > max[1]){
-                    max = copy(arr[j]);
+            for (int j=i;j< arr.size();j++){
+                if (arr.get(j).get(1) > max.get(1)){
+                    max = new ArrayList<>(arr.get(j));
                     maxIndex = j;
                 }
             }
             if (maxIndex > -1){
-                arr[maxIndex] = copy(arr[i]);
-                arr[i] = copy(max);
-                max = new double[2];
-                max[0] = -1;
-                max[1] = -200;
+                arr.set(maxIndex, new ArrayList<>(arr.get(i)));
+                arr.set(i, new ArrayList<>(max));
+                max = new ArrayList<>();
+                max.add(-1.0);
+                max.add(-200.0);
             }
 
 
@@ -210,13 +212,6 @@ public class Heuristics {
             return -1;
         }
         return arr[(int)i];
-    }
-    public static double[] copy(double[] arr){
-        double[] newArr = new double[arr.length];
-        for (int i=0;i< arr.length;i++){
-            newArr[i] = arr[i];
-        }
-        return newArr;
     }
 
 }
