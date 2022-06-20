@@ -1,10 +1,8 @@
 
 import com.sun.tools.jconsole.JConsoleContext;
+import jdk.swing.interop.SwingInterOpUtils;
 
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class App {
     private static int[] columnLengths =  {5, 5, 5, 5, 5, 5, 5};
@@ -20,7 +18,7 @@ public class App {
             {1, 2, 1, 2, 1, 2, 2}
 
     };
-    private static int count = 1;
+    private static int count = 0;
     private static int depth = 14;
     private static Worker[] workers = new Worker[7];
     private static ArrayList<Worker> workersBack = new ArrayList<>();
@@ -34,7 +32,7 @@ public class App {
         arr.add(0);
         arr.add(0);
         arr.add(0);
-        System.out.println(Heuristics.heuristicValue(2, board2, 0));
+        System.out.println(Heuristics.heuristicValue(2, board2));
         //System.out.println(Heuristics.findConsecutives(2, arr));
         //System.out.println(Heuristics.heuristicVerticalSearch(2, board2));
 //        if (count%2==1){
@@ -43,12 +41,13 @@ public class App {
 //            count++;
 //            print(board);
 //        }
-        game();
 
+       //game();
+        System.out.println(7 & 15);
 
     }
     public static void game(){
-        if (count%3==0){
+        if (count%5==0){
             depth++;
         }
         if (GameMethods.decideGameState(board)!=-1){
@@ -121,35 +120,21 @@ public class App {
 
     }
     public static void playBestMove(){
-        int bestScore = Integer.MAX_VALUE;
-        int bestMove = -10;
-        ArrayList<ArrayList<Double>> arr = new ArrayList<>();
-        ArrayList<Double> temp;
+        int bestMove;
+        double[][] arr = new double[7][2];
         for (int i=0;i<scores.length;i++){
-            temp = new ArrayList<>();
-            temp.add((double)i);
+            arr[i][0]= i;
             if (columnLengths[i]>=0){
-                temp.add(scores[i]);
+                arr[i][1] = scores[i];
             }
             else {
-                temp.add((double)Integer.MAX_VALUE);
+                arr[i][1] = Integer.MAX_VALUE;
             }
-            arr.add(temp);
         }
-//        for (int i=0;i<scores.length;i++){
-//            if (columnLengths[i]>=0 && bestScore>scores[i]){
-//                bestScore = scores[i];
-//                bestMove = i;
-//            }
-//            else if (columnLengths[i]>0 && bestScore==scores[i]){
-//                bestScore = scores[i];
-//                bestMove = i;
-//            }
-//        }
         System.out.println(arr);
         //System.out.println("selection");
         //System.out.println(Heuristics.selectionSort(arr));
-        bestMove = Heuristics.orderByCenter(reverse(Heuristics.selectionSort(arr))).get(0).get(0).intValue();
+        bestMove = (int)Heuristics.orderByCenter(reverse(Heuristics.selectionSort(arr)))[0][0];
         System.out.println("best move: "+bestMove );
         System.out.println("cols");
         print(columnLengths);
@@ -161,6 +146,14 @@ public class App {
         System.out.println();
     }
     public static void print(int[][] arr){
+        for (int i=0;i<arr.length;i++){
+            for (int j=0;j<arr[i].length;j++){
+                System.out.print(arr[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+    public static void print(double[][] arr){
         for (int i=0;i<arr.length;i++){
             for (int j=0;j<arr[i].length;j++){
                 System.out.print(arr[i][j] + " ");
@@ -180,12 +173,15 @@ public class App {
         }
         System.out.println();
     }
-    public static ArrayList<ArrayList<Double>> reverse(ArrayList<ArrayList<Double>> arr)
-    {
-        ArrayList<ArrayList<Double>> newArr = new ArrayList<>();
-        for (int i = arr.size() - 1; i >= 0; i--) {
 
-            newArr.add(arr.get(i));
+    public static double[][] reverse(double[][] arr)
+    {
+        double[][] newArr = new double[arr.length][arr[0].length];
+        int count = 0;
+        for (int i = arr.length - 1; i >= 0; i--) {
+
+            newArr[count] = Heuristics.copy(arr[i]);
+            count++;
         }
         return newArr;
     }
@@ -196,5 +192,9 @@ public class App {
         for (int i = 0; i < alist.size(); i++) {
             System.out.print(alist.get(i) + " ");
         }
+    }
+
+    public static Worker[] getWorkers() {
+        return workers;
     }
 }

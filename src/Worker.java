@@ -11,11 +11,10 @@ public class Worker extends Thread{
     private Map<String, Double> map = new HashMap<>(100000);
     private int num = 0;
     public Worker(int move, int depth, int[][] board, int[] columnLengths){
-        firstMove = move;
+        this.firstMove = move;
         this.depth = depth;
         this.board = copy(board);
         this.columnLengths = copy(columnLengths);
-
     }
 
     private static int[][] copy(int[][] arr){
@@ -56,11 +55,16 @@ public class Worker extends Thread{
     }
 
     private double minimax(int move, double alpha, double beta, int depth, boolean player1, int[][] board, int[] columnLengths){
+
         if (map.get(hash(board))!=null){
             return map.get(hash(board));
         }
-        if (num==4000000){
-            System.out.println(firstMove+" 4 mil");
+        if (num==4300000){
+            System.out.println(firstMove+" 4.3 mil");
+        }
+        else if (num==4100000){
+            System.out.println(firstMove+" 4.1 mil");
+
         }
         else if (num == 3350000){
             System.out.println(firstMove + " 3.35 mil");
@@ -83,8 +87,8 @@ public class Worker extends Thread{
         else if (num == 2000000){
             System.out.println(firstMove + " 2 mil");
         }
-
         num++;
+
         double maxVal;
         double minVal;
         double val;
@@ -92,21 +96,21 @@ public class Worker extends Thread{
         if (gameState==1){
 //            System.out.println("bruhhhh");
 //            print(board);
-            map.putIfAbsent(hash(board), 100.0+depth);
-            return 100+depth;
+            map.putIfAbsent(hash(board), 100.0);
+            return 100;
         }
         if (gameState==2){
 //            System.out.println("booootf");
 //            print(board);
-            map.putIfAbsent(hash(board), -100.0-depth);
-            return -100-depth;
+            map.putIfAbsent(hash(board), -100.0);
+            return -100;
         }
         if (gameState==0){
             map.putIfAbsent(hash(board), 0.0);
             System.out.println("draww");
             return 0;
         }
-        if (depth==0 || num > 4000000){
+        if (depth==0 ){
 //            if (player1){
 //                columnLengths[move]++;
 //                board[columnLengths[move]][move] = 0;
@@ -115,14 +119,15 @@ public class Worker extends Thread{
 //                columnLengths[move]--;
 //                return temp;
 //            }
-            return Heuristics.heuristicValue(1, board, depth) -Heuristics.heuristicValue(2, board, depth);
+
+            return Heuristics.heuristicValue(1, board) - Heuristics.heuristicValue(2, board);
             //return 0;
         }
         if (player1){
             maxVal = Integer.MIN_VALUE;
-            ArrayList<ArrayList<Double>> moves = Heuristics.orderMoves(1, columnLengths,board, depth);
-            for (int i=0;i<moves.size();i++){
-                int currentMove = (int)Math.floor(moves.get(i).get(0));
+            double[][] moves = Heuristics.orderMoves(1, columnLengths,board, firstMove);
+            for (int i=0;i<moves.length;i++){
+                int currentMove = (int)Math.floor(moves[i][0]);
                 if (columnLengths[currentMove]>=0){
                     board[columnLengths[currentMove]][currentMove] = 1;
                     columnLengths[currentMove]--;
@@ -131,9 +136,10 @@ public class Worker extends Thread{
 
                     }
                     else {
-                        val = -100-depth+1;
+                        val = -100;
                     }
                     map.putIfAbsent(hash(board), val);
+
                     columnLengths[currentMove]++;
                     board[columnLengths[currentMove]][currentMove] = 0;
                     maxVal = Math.max(maxVal, val);
@@ -147,9 +153,9 @@ public class Worker extends Thread{
         }
         else{
             minVal = Integer.MAX_VALUE;
-            ArrayList<ArrayList<Double>> moves = Heuristics.orderMoves(2, columnLengths,board, depth);
-            for (int i=0;i<moves.size();i++){
-                int currentMove = (int)Math.floor(moves.get(i).get(0));
+            double[][] moves = Heuristics.orderMoves(2, columnLengths,board, firstMove);
+            for (int i=0;i<moves.length;i++){
+                int currentMove = (int)Math.floor(moves[i][0]);
                 if (columnLengths[currentMove]>=0){
                     board[columnLengths[currentMove]][currentMove] = 2;
                     columnLengths[currentMove]--;
@@ -157,7 +163,7 @@ public class Worker extends Thread{
                         val = minimax(currentMove, alpha, beta, depth-1, true, board, columnLengths);
                     }
                     else {
-                        val = 100+depth-1;
+                        val = 100;
                     }
 
                     map.putIfAbsent(hash(board), val);
@@ -208,4 +214,5 @@ public class Worker extends Thread{
     public double getValue() {
         return value;
     }
+
 }
